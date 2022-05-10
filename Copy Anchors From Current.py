@@ -20,12 +20,15 @@ n = 0
 glyphs = ''
 print('\r# Anchors \r')
 for g in font:
-    if len(g.anchors) > 0 and g.name in otherFont:
+    if g.anchors and g.name in otherFont:
         for a in g.anchors:
             aName = a.name
             aX = a.position[0]
             aY = a.position[1]
-            factor = (otherFont[g.name].width / font[g.name].width) # difference by scale factor
+            if otherFont[g.name].width != 0 or font[g.name].width != 0:
+                factor = (otherFont[g.name].width / font[g.name].width) # difference by scale factor
+            else:
+                factor = 1
             aX = round(aX * factor) # applying factor
             #print(g.name, aName, aX, aY)
             # if "Italic" in otherFont.info.styleName:
@@ -41,8 +44,8 @@ for g in font:
                     otherFont[g.name].appendAnchor(aName, (aX, aY))
                     glyphs = glyphs+'\r'+g.name+' '
                     n = n+1
-    else:
-        print(g.name, "contains anchor but glyph not in otherFont")
+    elif g.anchors and g.name not in otherFont:
+        print(g.name, "# Source glyph contains anchor but glyph not in otherFont")
 otherFont.changed()
 #print font
 #print('# added anchors in: '+glyphs)
